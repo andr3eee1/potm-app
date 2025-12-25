@@ -1,11 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { LayoutDashboard, Trophy, Gamepad2, LogOut } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function Header() {
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -13,7 +17,6 @@ export default function Header() {
       setUser(JSON.parse(userStr));
     }
     
-    // Listen for storage changes to update UI across tabs or after login
     const handleStorageChange = () => {
         const updatedUser = localStorage.getItem('user');
         setUser(updatedUser ? JSON.parse(updatedUser) : null);
@@ -30,40 +33,80 @@ export default function Header() {
     router.refresh();
   };
 
-  const initials = user 
-    ? (user.name ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase() : user.email[0].toUpperCase())
-    : '?';
+  const navLinks = [
+    { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/tournaments', label: 'Tournaments', icon: Gamepad2 },
+    { href: '/leaderboard', label: 'Hall of Fame', icon: Trophy },
+  ];
 
   return (
-    <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-8 flex items-center justify-between">
-      <div className="lg:hidden flex items-center gap-3">
-         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-         <span className="font-black text-xl tracking-tight">POTM</span>
-      </div>
-      <div className="hidden lg:block text-sm font-medium text-slate-500">
-        {user ? (
-            <>Welcome back, <span className="text-slate-900 dark:text-white font-bold">{user.name || user.email}</span></>
-        ) : (
-            <>Welcome to <span className="text-slate-900 dark:text-white font-bold">POTM</span></>
-        )}
-      </div>
-      
-      <div className="flex items-center gap-4">
-        {user && (
-            <button 
-                onClick={handleLogout}
-                className="text-xs font-semibold text-red-500 hover:text-red-400 transition-colors mr-2"
-            >
-                Logout
-            </button>
-        )}
-        <div className="relative">
-          <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
-            <div className="w-full h-full flex items-center justify-center font-bold text-sm">
-                {initials}
-            </div>
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          
+          {/* Logo & Nav */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2 group">
+               <div className="w-8 h-8 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)] group-hover:scale-105 transition-transform">
+                 P
+               </div>
+               <span className="font-bold text-xl tracking-tight text-white group-hover:text-indigo-400 transition-colors">POTM</span>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link 
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2",
+                      isActive 
+                        ? "bg-white/10 text-white shadow-inner" 
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <link.icon size={16} className={isActive ? "text-indigo-400" : ""} />
+                    {link.label}
+                  </Link>
+                )
+              })}
+            </nav>
           </div>
-          {user && <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></div>}
+
+          {/* User Profile */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                 <div className="text-right hidden sm:block">
+                    <p className="text-sm font-medium text-white leading-none">{user.name || user.email}</p>
+                    <p className="text-xs text-indigo-400 font-medium mt-1 uppercase tracking-wider">{user.role}</p>
+                 </div>
+                 <button 
+                    onClick={handleLogout}
+                    className="p-2 text-gray-400 hover:text-red-400 hover:bg-white/5 rounded-full transition-colors"
+                    title="Logout"
+                 >
+                    <LogOut size={18} />
+                 </button>
+                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-indigo-500/20">
+                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-xs font-bold text-white">
+                        {(user.name?.[0] || user.email[0]).toUpperCase()}
+                    </div>
+                 </div>
+              </div>
+            ) : (
+               <div className="flex items-center gap-3">
+                 <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                   Login
+                 </Link>
+                 <Link href="/register" className="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-200 transition-colors shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+                   Sign Up
+                 </Link>
+               </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

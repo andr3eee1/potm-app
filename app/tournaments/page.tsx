@@ -1,6 +1,6 @@
 'use client';
 
-import { Gamepad2, Users, Calendar, Trophy, ChevronRight } from "lucide-react";
+import { Gamepad2, Users, Calendar, Trophy, ArrowRight, Filter, Search } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -43,107 +43,128 @@ export default function TournamentsPage() {
   );
 
   if (loading) {
-    return <div className="p-8 text-center text-white">Loading tournaments...</div>;
+    return (
+        <div className="flex items-center justify-center min-h-[50vh]">
+            <div className="animate-pulse text-indigo-400 font-medium">Scanning mission protocols...</div>
+        </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Tournaments</h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">Browse and join active coding competitions.</p>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Mission Select</h1>
+          <p className="text-gray-400 mt-1">Join active operations and competitive protocols.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-blue-900/20">
-            Create Tournament
+        <div>
+          <button className="bg-white text-black hover:bg-gray-200 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_-5px_rgba(255,255,255,0.5)]">
+            Create Protocol
           </button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {["All", "Active", "Upcoming", "Completed"].map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={cn(
-              "px-4 py-2 rounded-lg text-sm font-medium border whitespace-nowrap transition-colors",
-              filter === f 
-                ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent" 
-                : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
-            )}
-          >
-            {f}
-          </button>
-        ))}
+      {/* Filters & Search */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 bg-white/5 p-1 rounded-full border border-white/10">
+          {["All", "Active", "Upcoming", "Completed"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={cn(
+                "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all",
+                filter === f 
+                  ? "bg-white text-black shadow-lg" 
+                  : "text-gray-500 hover:text-white hover:bg-white/5"
+              )}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        
+        <div className="relative w-full sm:w-64">
+           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+           <input 
+             type="text" 
+             placeholder="Search missions..." 
+             className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+           />
+        </div>
       </div>
 
       {/* Tournaments Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTournaments.length > 0 ? (
           filteredTournaments.map((t) => (
-            <div key={t.id} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col transition-hover hover:shadow-md group">
-              <div className="p-6 flex-1">
+            <div key={t.id} className="glass rounded-2xl flex flex-col group hover:border-indigo-500/30 transition-all hover:bg-white/[0.07] relative overflow-hidden">
+              
+              {/* Glow Effect on Hover */}
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-indigo-500/0 via-purple-500/0 to-indigo-500/0 group-hover:from-indigo-500/20 group-hover:via-purple-500/20 group-hover:to-indigo-500/20 opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500"></div>
+
+              <div className="p-6 flex-1 relative z-10">
                 <div className="flex justify-between items-start mb-4">
-                  <div className={cn("p-2.5 rounded-xl text-white shadow-lg", t.color)}>
-                    <Gamepad2 size={24} />
-                  </div>
-                  <div className={cn(
-                    "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
-                    t.status === "Active" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" :
-                    t.status === "Upcoming" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" :
-                    "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                   <div className={cn(
+                    "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+                    t.status === "Active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_-4px_rgba(52,211,153,0.5)]" :
+                    t.status === "Upcoming" ? "bg-blue-500/10 text-blue-400 border-blue-500/20" :
+                    "bg-gray-500/10 text-gray-400 border-gray-500/20"
                   )}>
                     {t.status}
                   </div>
-                </div>
-                
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {t.title}
-                </h3>
-                
-                <div className="flex flex-wrap gap-x-6 gap-y-3 mt-4">
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                    <Users size={16} />
-                    <span>{t.participants}/{t.maxParticipants} joined</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                    <Trophy size={16} />
-                    <span>{t.tasksCount} tasks</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                    <Calendar size={16} />
-                    <span>{t.startDate}</span>
-                  </div>
-                </div>
-
-                <div className="mt-4">
                   <span className={cn(
-                    "text-[10px] font-bold uppercase px-2 py-0.5 rounded border",
-                    t.difficulty === "Hard" ? "border-red-200 text-red-600 bg-red-50 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400" :
-                    t.difficulty === "Medium" ? "border-orange-200 text-orange-600 bg-orange-50 dark:border-orange-900/30 dark:bg-orange-900/20 dark:text-orange-400" :
-                    "border-emerald-200 text-emerald-600 bg-emerald-50 dark:border-emerald-900/30 dark:bg-emerald-900/20 dark:text-emerald-400"
+                    "text-[10px] font-bold uppercase px-2 py-0.5 rounded border bg-white/5 border-white/10 text-gray-400"
                   )}>
                     {t.difficulty}
                   </span>
                 </div>
+                
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">
+                  {t.title}
+                </h3>
+                
+                <div className="space-y-3 mt-6">
+                  <div className="flex items-center justify-between text-sm border-b border-white/5 pb-2">
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Users size={14} />
+                      <span>Operatives</span>
+                    </div>
+                    <span className="font-mono font-medium text-white">{t.participants}</span>
+                  </div>
+                   <div className="flex items-center justify-between text-sm border-b border-white/5 pb-2">
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Trophy size={14} />
+                      <span>Modules</span>
+                    </div>
+                    <span className="font-mono font-medium text-white">{t.tasksCount}</span>
+                  </div>
+                   <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <Calendar size={14} />
+                      <span>Deadline</span>
+                    </div>
+                    <span className="font-mono font-medium text-white">{t.endDate}</span>
+                  </div>
+                </div>
               </div>
               
-              <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Ends on {t.endDate}</span>
+              <div className="px-6 py-4 bg-white/5 border-t border-white/10 relative z-10">
                 <Link 
                   href={`/tournaments/${t.id}`}
-                  className="text-blue-600 dark:text-blue-400 font-bold text-sm flex items-center gap-1 group/btn"
+                  className="w-full flex items-center justify-center gap-2 text-sm font-bold text-gray-300 group-hover:text-white transition-colors group/btn"
                 >
-                  {t.status === "Active" ? "Join Now" : "Details"}
-                  <ChevronRight size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                  {t.status === "Active" ? "Access Terminal" : "Mission Briefing"}
+                  <ArrowRight size={16} className="text-indigo-500 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
           ))
         ) : (
-          <div className="col-span-full p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-             <p className="text-slate-500">No tournaments found for this category.</p>
+          <div className="col-span-full py-24 text-center glass rounded-2xl border-dashed border-white/10">
+             <div className="mx-auto w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                <Gamepad2 className="text-gray-600" size={32} />
+             </div>
+             <p className="text-gray-500 font-medium">No missions found matching criteria.</p>
           </div>
         )}
       </div>
