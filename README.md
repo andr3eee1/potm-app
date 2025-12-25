@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# POTM App (Frontend)
 
-## Getting Started
+The **Programmer of the Month (POTM) App** is the modern, futuristic frontend for the competitive coding platform. It features a "Midnight Glass" aesthetic, providing a premium "Command Center" experience for developers.
 
-First, run the development server:
+## 🛠 Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework:** Next.js 15 (App Router)
+- **Library:** React 19
+- **Styling:** Tailwind CSS v4
+- **Icons:** Lucide React
+- **Design System:** "Midnight Glass" (Dark mode, glassmorphism, glowing accents)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Futuristic UI/UX:**
+  - **Bento Grid Dashboard:** A modular, high-density display of stats and missions.
+  - **Glassmorphism:** Translucent cards (`bg-white/5`) with backdrop blur and subtle borders.
+  - **Responsive Design:** Fully optimized for desktop and mobile command centers.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **User Experience:**
+  - **Authentication:** Seamless Login/Register flow with hard redirects for state consistency.
+  - **Public Profiles:** Detailed pages showing user rank, total score, and tournament history.
+  - **Dynamic Navigation:** Context-aware header with user avatar and admin links.
 
-## Learn More
+- **Core Modules:**
+  - **Dashboard:** Real-time overview of active operations and global stats.
+  - **Tournaments:** Browse active, upcoming, and completed coding missions.
+  - **Leaderboard:** Global "Hall of Fame" ranking top operatives.
+  - **Admin Panel:** Specialized interface for admins to deploy new tournaments and manage users (manual score/role overrides).
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Environment Setup:**
+    Create a `.env.local` file:
+    ```bash
+    NEXT_PUBLIC_API_URL=http://localhost:3001
+    ```
 
-## Deploy on Vercel
+3.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/`: Next.js App Router pages and layouts.
+- `app/admin/`: Admin-specific pages (Dashboard, Create Tournament).
+- `app/components/`: Reusable UI components (Header, Cards).
+- `lib/api.ts`: Centralized fetcher utility for API communication.
+- `app/globals.css`: Global styles, variables, and Tailwind directives.
