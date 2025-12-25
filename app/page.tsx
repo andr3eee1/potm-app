@@ -20,6 +20,7 @@ interface DashboardStats {
     endDate: string;
   } | null;
   leaderboard: {
+    id: number;
     name: string;
     score: number;
     rank: number;
@@ -65,6 +66,8 @@ export default function Home() {
     { label: "Global Agents", value: stats?.totalParticipants.toString() || "0", icon: Users, color: "text-blue-400" },
     { label: "Next Deployment", value: stats?.nextContest ? new Date(stats.nextContest).toLocaleDateString() : "TBA", icon: Clock, color: "text-purple-400" },
   ];
+
+  console.log(stats.leaderboard);
 
   return (
     <div className="flex flex-col gap-8">
@@ -190,21 +193,23 @@ export default function Home() {
                     {stats?.leaderboard && stats.leaderboard.length > 0 ? (
                         stats.leaderboard.map((p) => (
                             <div key={p.name} className="grid grid-cols-12 items-center p-4 hover:bg-white/5 transition-colors group">
-                                <div className="col-span-2 text-center">
-                                    <span className={cn(
-                                        "font-mono font-bold text-sm",
-                                        p.rank === 1 ? "text-yellow-400" : p.rank === 2 ? "text-gray-300" : p.rank === 3 ? "text-amber-700" : "text-gray-600"
-                                    )}>#{p.rank}</span>
-                                </div>
-                                <div className="col-span-7 flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400 group-hover:text-white group-hover:border-indigo-500/50 transition-colors">
-                                        {p.avatar}
+                                <Link href={`/profile/${p.id}`} className="flex items-center gap-4 group-hover:opacity-80 transition-opacity">
+                                    <div className="col-span-2 text-center">
+                                        <span className={cn(
+                                            "font-mono font-bold text-sm",
+                                            p.rank === 1 ? "text-yellow-400" : p.rank === 2 ? "text-gray-300" : p.rank === 3 ? "text-amber-700" : "text-gray-600"
+                                        )}>#{p.rank}</span>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-300 group-hover:text-white truncate">{p.name}</span>
-                                </div>
-                                <div className="col-span-3 text-right">
-                                    <span className="font-mono font-bold text-indigo-400 text-sm">{p.score}</span>
-                                </div>
+                                    <div className="col-span-7 flex items-center gap-3">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-800 to-black border border-white/10 flex items-center justify-center text-[10px] font-bold text-gray-400 group-hover:text-white group-hover:border-indigo-500/50 transition-colors">
+                                            {p.avatar}
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-300 group-hover:text-white truncate">{p.name}</span>
+                                    </div>
+                                    <div className="col-span-3 text-right">
+                                        <span className="font-mono font-bold text-indigo-400 text-sm">{p.score}</span>
+                                    </div>
+                                </Link>
                             </div>
                         ))
                     ) : (
