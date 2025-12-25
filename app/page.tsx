@@ -67,8 +67,6 @@ export default function Home() {
     { label: "Next Deployment", value: stats?.nextContest ? new Date(stats.nextContest).toLocaleDateString() : "TBA", icon: Clock, color: "text-purple-400" },
   ];
 
-  console.log(stats.leaderboard);
-
   return (
     <div className="flex flex-col gap-8">
       {/* Welcome Header */}
