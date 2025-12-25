@@ -21,7 +21,7 @@ export default function LoginPage() {
       });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      router.push('/');
+      window.location.href = '/';
     } catch (err: any) {
        // Try to parse if it's a JSON string
        try {
