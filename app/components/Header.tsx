@@ -37,6 +37,7 @@ export default function Header() {
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/tournaments', label: 'Tournaments', icon: Gamepad2 },
     { href: '/leaderboard', label: 'Hall of Fame', icon: Trophy },
+    ...(user?.role === 'ADMIN' ? [{ href: '/admin', label: 'Admin Panel', icon: LayoutDashboard }] : []),
   ];
 
   return (
