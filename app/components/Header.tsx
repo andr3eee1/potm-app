@@ -40,6 +40,10 @@ export default function Header() {
     ...(user?.role === 'ADMIN' ? [{ href: '/admin', label: 'Admin Panel', icon: LayoutDashboard }] : []),
   ];
 
+  const initials = user 
+    ? (user.name ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase() : user.email[0].toUpperCase())
+    : '?';
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,11 +95,14 @@ export default function Header() {
                  >
                     <LogOut size={18} />
                  </button>
-                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-indigo-500/20">
-                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-xs font-bold text-white">
-                        {(user.name?.[0] || user.email[0]).toUpperCase()}
+                 <Link href={`/profile/${user.id}`} className="relative group cursor-pointer">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                        <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-xs font-bold text-white">
+                            {initials}
+                        </div>
                     </div>
-                 </div>
+                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>
+                 </Link>
               </div>
             ) : (
                <div className="flex items-center gap-3">
