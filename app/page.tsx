@@ -1,6 +1,7 @@
 import { Trophy, Gamepad2, Users, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import UserStatus from "./components/UserStatus";
 
 const stats = [
   { label: "Active Tournaments", value: "3", icon: Gamepad2, color: "text-blue-500" },
@@ -29,6 +30,9 @@ export default function Home() {
       <section className="bg-gradient-to-br from-indigo-900 via-slate-900 to-black text-white p-8 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden relative">
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="max-w-xl">
+            <div className="mb-4">
+              <UserStatus />
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
               Programmer of the Month
             </h1>
