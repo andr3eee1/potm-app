@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { LayoutDashboard, Trophy, Gamepad2, Users, Settings } from "lucide-react";
 import Link from "next/link";
+import Header from "./components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,24 +56,7 @@ export default function RootLayout({
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-h-screen">
-          <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-8 flex items-center justify-between">
-            <div className="lg:hidden flex items-center gap-3">
-               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">P</div>
-               <span className="font-black text-xl tracking-tight">POTM</span>
-            </div>
-            <div className="hidden lg:block text-sm font-medium text-slate-500">
-              Welcome back, <span className="text-slate-900 dark:text-white font-bold">Andrei</span>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
-                  <div className="w-full h-full flex items-center justify-center font-bold text-sm">AP</div>
-                </div>
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
-              </div>
-            </div>
-          </header>
+          <Header />
 
           <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
             {children}
