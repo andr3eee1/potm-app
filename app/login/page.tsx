@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { fetcher } from '@/lib/api';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     try {
       const data = await fetcher('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -61,13 +61,13 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Identity</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Username</label>
                 <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
-                placeholder="operative@potm.com"
+                placeholder="operative_01"
                 required
                 />
             </div>
