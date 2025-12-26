@@ -1,36 +1,51 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { LayoutDashboard, Trophy, Gamepad2, LogOut } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { LayoutDashboard, LogOut, User as UserIcon, Shield, Trophy, Gamepad2 } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { fetcher } from "@/lib/api";
 
 export default function Header() {
-  const [user, setUser] = useState<any>(null);
-  const router = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      setUser(JSON.parse(userStr));
+    // Initial check from local storage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-    
-    const handleStorageChange = () => {
-        const updatedUser = localStorage.getItem('user');
-        setUser(updatedUser ? JSON.parse(updatedUser) : null);
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
-  const handleLogout = () => {
+    // Refresh user data from server to check for role updates
+    const refreshSession = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const data = await fetcher('/auth/me');
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+            }
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                setUser(data.user);
+            }
+        } catch (error) {
+            console.error("Session refresh failed", error);
+        }
+    };
+
+    refreshSession();
+  }, [pathname]);
+
+  const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     router.push('/login');
-    router.refresh();
   };
 
   const navLinks = [
@@ -89,7 +104,7 @@ export default function Header() {
                     <p className="text-xs text-indigo-400 font-medium mt-1 uppercase tracking-wider">{user.role}</p>
                  </div>
                  <button 
-                    onClick={handleLogout}
+                    onClick={logout}
                     className="p-2 text-gray-400 hover:text-red-400 hover:bg-white/5 rounded-full transition-colors"
                     title="Logout"
                  >
