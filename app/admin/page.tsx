@@ -84,10 +84,6 @@ export default function AdminDashboard() {
            <h1 className="text-3xl font-bold text-white">Admin Control</h1>
            <p className="text-gray-400 mt-1">System management and user oversight.</p>
         </div>
-        <Link href="/admin/tournaments/new" className="bg-white text-black hover:bg-gray-200 px-5 py-2.5 rounded-full font-bold text-sm transition-all flex items-center gap-2 shadow-[0_0_15px_-5px_rgba(255,255,255,0.5)]">
-            <Plus size={16} />
-            Create Tournament
-        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -126,11 +122,14 @@ export default function AdminDashboard() {
                                            >
                                                <option value="USER">USER</option>
                                                <option value="ADMIN">ADMIN</option>
+                                               <option value="EDITOR">EDITOR</option>
                                            </select>
                                        ) : (
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded text-[10px] font-bold uppercase",
-                                                u.role === 'ADMIN' ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" : "bg-gray-500/10 text-gray-400 border border-gray-500/20"
+                                                u.role === 'ADMIN' ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" : 
+                                                u.role === 'EDITOR' ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
+                                                "bg-gray-500/10 text-gray-400 border border-gray-500/20"
                                             )}>
                                                 {u.role}
                                             </span>
