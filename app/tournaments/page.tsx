@@ -23,8 +23,20 @@ export default function TournamentsPage() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
+  const [canCreate, setCanCreate] = useState(false);
 
   useEffect(() => {
+    // Check Role
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === 'ADMIN' || payload.role === 'EDITOR') setCanCreate(true);
+        } catch (e) {
+            console.error("Invalid token", e);
+        }
+    }
+
     const loadTournaments = async () => {
       try {
         const data = await fetcher('/tournaments');
@@ -58,9 +70,11 @@ export default function TournamentsPage() {
           <p className="text-gray-400 mt-1">Join active operations and competitive protocols.</p>
         </div>
         <div>
-          <button className="bg-white text-black hover:bg-gray-200 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_-5px_rgba(255,255,255,0.5)]">
-            Create Protocol
-          </button>
+          {canCreate && (
+              <Link href="/tournaments/new" className="bg-white text-black hover:bg-gray-200 px-5 py-2.5 rounded-full font-bold text-sm transition-all shadow-[0_0_15px_-5px_rgba(255,255,255,0.5)]">
+                Create Protocol
+              </Link>
+          )}
         </div>
       </div>
 

@@ -26,16 +26,16 @@ export default function TournamentDetailPage() {
   const { id } = params;
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check Admin Role
+    // Check Admin/Editor Role
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            if (payload.role === 'ADMIN') setIsAdmin(true);
+            if (payload.role === 'ADMIN' || payload.role === 'EDITOR') setCanEdit(true);
         } catch (e) {
             console.error("Invalid token", e);
         }
@@ -101,9 +101,9 @@ export default function TournamentDetailPage() {
                   <p className="text-xl text-gray-400">{tournament.description}</p>
               </div>
               
-              {isAdmin && (
+              {canEdit && (
                   <Link 
-                    href={`/admin/tournaments/${tournament.id}/edit`}
+                    href={`/tournaments/${tournament.id}/edit`}
                     className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-500/20"
                   >
                       <Edit size={16} /> Edit Protocol

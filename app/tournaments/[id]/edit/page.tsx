@@ -77,11 +77,11 @@ export default function EditTournamentPage() {
     e.preventDefault();
     setError('');
     try {
-      await fetcher(`/admin/tournaments/${id}`, {
+      await fetcher(`/tournaments/${id}`, {
         method: 'PUT',
         body: JSON.stringify(formData),
       });
-      router.push('/admin');
+      router.push('/tournaments');
     } catch (err: any) {
         try {
             const parsed = JSON.parse(err.message);
@@ -101,8 +101,8 @@ export default function EditTournamentPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-          <Link href="/admin" className="text-gray-500 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-4">
-              <ArrowLeft size={16} /> Back to Dashboard
+          <Link href="/tournaments" className="text-gray-500 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-4">
+              <ArrowLeft size={16} /> Back to Missions
           </Link>
           <h1 className="text-3xl font-bold text-white">Edit Protocol</h1>
           <p className="text-gray-400 mt-1">Update mission parameters.</p>
