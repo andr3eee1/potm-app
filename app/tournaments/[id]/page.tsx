@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { fetcher } from '@/lib/api';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Trophy, Edit, Award } from 'lucide-react';
+import { ArrowLeft, Calendar, Trophy, Edit, Award, Upload, X, FileCode } from 'lucide-react';
 import TypstRenderer from '@/app/components/TypstRenderer';
 
 interface Tournament {
@@ -19,6 +19,7 @@ interface Tournament {
   color: string;
   prizePool?: string;
   points: number;
+  creatorId?: number;
 }
 
 export default function TournamentDetailPage() {
@@ -28,6 +29,13 @@ export default function TournamentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [canEdit, setCanEdit] = useState(false);
   const [error, setError] = useState('');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  
+  // Submission State
+  const [isSubmitOpen, setIsSubmitOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     // Check Admin/Editor Role
@@ -35,6 +43,7 @@ export default function TournamentDetailPage() {
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
+            setCurrentUser(payload);
             if (payload.role === 'ADMIN' || payload.role === 'EDITOR') setCanEdit(true);
         } catch (e) {
             console.error("Invalid token", e);
@@ -57,6 +66,32 @@ export default function TournamentDetailPage() {
     loadTournament();
   }, [id]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+          setFile(e.target.files[0]);
+      }
+  };
+
+  const submitSolution = async () => {
+      if (!file) return;
+      setSubmitting(true);
+      setSubmitError('');
+      try {
+          const text = await file.text();
+          await fetcher(`/tournaments/${id}/submit`, {
+              method: 'POST',
+              body: JSON.stringify({ code: text, language: 'cpp' })
+          });
+          setIsSubmitOpen(false);
+          setFile(null);
+          alert('Solution submitted successfully!');
+      } catch (err: any) {
+          setSubmitError(err.message);
+      } finally {
+          setSubmitting(false);
+      }
+  };
+
   if (loading) {
      return (
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -74,6 +109,8 @@ export default function TournamentDetailPage() {
           </div>
       )
   }
+
+  const canViewSubmissions = currentUser && (currentUser.role === 'ADMIN' || (tournament.creatorId && currentUser.userId === tournament.creatorId));
 
   return (
     <div className="max-w-7xl mx-auto pb-20 px-4">
@@ -189,13 +226,65 @@ export default function TournamentDetailPage() {
 
               {/* Submit Button */}
               {tournament.status === 'Active' && (
-                <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group">
+                <button 
+                    onClick={() => setIsSubmitOpen(true)}
+                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+                >
                     <span className="uppercase tracking-wider">Submit Solution</span>
-                    <ArrowLeft size={16} className="rotate-180 group-hover:translate-x-1 transition-transform" />
+                    <Upload size={16} className="group-hover:-translate-y-0.5 transition-transform" />
                 </button>
+              )}
+
+              {/* Creator Actions */}
+              {canViewSubmissions && (
+                  <Link href={`/tournaments/${tournament.id}/submissions`} className="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl border border-white/10 flex items-center justify-center gap-2 transition-colors">
+                      <FileCode size={16} /> View Submissions
+                  </Link>
               )}
           </div>
       </div>
+
+      {/* Submit Modal */}
+      {isSubmitOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 max-w-md w-full relative">
+                <button onClick={() => setIsSubmitOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white">
+                    <X size={20} />
+                </button>
+                <h3 className="text-2xl font-bold text-white mb-2">Upload Solution</h3>
+                <p className="text-gray-400 text-sm mb-6">Submit your source code (.c, .cpp). Only the last submission is counted.</p>
+                
+                {submitError && (
+                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg">{submitError}</div>
+                )}
+
+                <div className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-indigo-500/50 transition-colors bg-white/5 cursor-pointer relative group">
+                    <input 
+                        type="file" 
+                        accept=".c,.cpp" 
+                        onChange={handleFileChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div className="group-hover:scale-110 transition-transform duration-300">
+                         <Upload className="mx-auto text-indigo-500 mb-2" size={32} />
+                    </div>
+                    <p className="text-white font-medium">{file ? file.name : "Click to browse or drag file"}</p>
+                    <p className="text-xs text-gray-500 mt-1">Supported: C, C++</p>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-3">
+                    <button onClick={() => setIsSubmitOpen(false)} className="px-4 py-2 text-gray-400 hover:text-white font-medium">Cancel</button>
+                    <button 
+                        onClick={submitSolution}
+                        disabled={!file || submitting}
+                        className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow-lg shadow-indigo-500/20"
+                    >
+                        {submitting ? 'Uploading...' : 'Submit Protocol'}
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
     </div>
   );
 }
