@@ -10,13 +10,11 @@ interface Tournament {
   id: string;
   title: string;
   status: string;
-  participants: number;
-  maxParticipants: number;
   startDate: string;
   endDate: string;
-  tasksCount: number;
   difficulty: string;
   color: string;
+  prizePool?: string;
 }
 
 export default function TournamentsPage() {
@@ -140,17 +138,10 @@ export default function TournamentsPage() {
                 <div className="space-y-3 mt-6">
                   <div className="flex items-center justify-between text-sm border-b border-white/5 pb-2">
                     <div className="flex items-center gap-2 text-gray-500">
-                      <Users size={14} />
-                      <span>Operatives</span>
+                      <Trophy size={14} className="text-yellow-500" />
+                      <span>Prize Pool</span>
                     </div>
-                    <span className="font-mono font-medium text-white">{t.participants}</span>
-                  </div>
-                   <div className="flex items-center justify-between text-sm border-b border-white/5 pb-2">
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Trophy size={14} />
-                      <span>Modules</span>
-                    </div>
-                    <span className="font-mono font-medium text-white">{t.tasksCount}</span>
+                    <span className="font-mono font-medium text-yellow-400">{t.prizePool || "Honor & Glory"}</span>
                   </div>
                    <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2 text-gray-500">

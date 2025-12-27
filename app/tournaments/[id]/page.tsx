@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { fetcher } from '@/lib/api';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Users, Trophy, Edit } from 'lucide-react';
+import { ArrowLeft, Calendar, Trophy, Edit, Award } from 'lucide-react';
 import TypstRenderer from '@/app/components/TypstRenderer';
 
 interface Tournament {
@@ -13,13 +13,12 @@ interface Tournament {
   description: string;
   statement?: string;
   status: string;
-  participants: number;
-  maxParticipants: number;
   startDate: string;
   endDate: string;
-  tasksCount: number;
   difficulty: string;
   color: string;
+  prizePool?: string;
+  points: number;
 }
 
 export default function TournamentDetailPage() {
@@ -129,24 +128,24 @@ export default function TournamentDetailPage() {
           
            <div className="glass p-4 rounded-xl flex items-center gap-4">
               <div className="p-3 bg-purple-500/10 rounded-lg text-purple-400">
-                  <Users size={24} />
+                  <Trophy size={24} />
               </div>
               <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Operatives</div>
+                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Prize Pool</div>
                   <div className="text-white font-mono text-sm">
-                      {tournament.participants} / {tournament.maxParticipants}
+                      {tournament.prizePool || "Honor & Glory"}
                   </div>
               </div>
           </div>
 
            <div className="glass p-4 rounded-xl flex items-center gap-4">
               <div className="p-3 bg-amber-500/10 rounded-lg text-amber-400">
-                  <Trophy size={24} />
+                  <Award size={24} />
               </div>
               <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Modules</div>
+                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Points</div>
                   <div className="text-white font-mono text-sm">
-                      {tournament.tasksCount} Tasks
+                      {tournament.points} PTS
                   </div>
               </div>
           </div>

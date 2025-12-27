@@ -14,12 +14,13 @@ interface UserProfile {
   totalPoints: number;
   joinedAt: string;
   rank: number;
-  participations: {
+  submissions: {
+    id: number;
     tournamentId: number;
     tournamentTitle: string;
     status: string;
-    joinedAt: string;
-    score: number;
+    submittedAt: string;
+    score: number | null;
   }[];
 }
 
@@ -102,25 +103,25 @@ export default function ProfilePage() {
           </h2>
           
           <div className="grid gap-4">
-              {profile.participations.length > 0 ? (
-                  profile.participations.map((p) => (
-                      <div key={p.tournamentId} className="glass rounded-xl p-6 flex items-center justify-between group hover:border-white/20 transition-colors">
+              {profile.submissions.length > 0 ? (
+                  profile.submissions.map((s) => (
+                      <div key={s.id} className="glass rounded-xl p-6 flex items-center justify-between group hover:border-white/20 transition-colors">
                           <div className="flex items-center gap-4">
                               <div className={cn(
                                   "w-10 h-10 rounded-lg flex items-center justify-center",
-                                  p.status === 'ACTIVE' ? "bg-emerald-500/20 text-emerald-400" : 
-                                  p.status === 'COMPLETED' ? "bg-gray-800 text-gray-400" : "bg-blue-500/20 text-blue-400"
+                                  s.status === 'ACCEPTED' ? "bg-emerald-500/20 text-emerald-400" : 
+                                  s.status === 'REJECTED' ? "bg-red-500/20 text-red-400" : "bg-blue-500/20 text-blue-400"
                               )}>
                                   <Trophy size={20} />
                               </div>
                               <div>
-                                  <h3 className="font-bold text-white group-hover:text-indigo-300 transition-colors">{p.tournamentTitle}</h3>
-                                  <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">{p.status}</p>
+                                  <h3 className="font-bold text-white group-hover:text-indigo-300 transition-colors">{s.tournamentTitle}</h3>
+                                  <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">{s.status}</p>
                               </div>
                           </div>
                           <div className="text-right">
                               <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mb-1">Score</p>
-                              <p className="text-xl font-bold text-white font-mono">{p.score}</p>
+                              <p className="text-xl font-bold text-white font-mono">{s.score ?? 0}</p>
                           </div>
                       </div>
                   ))
