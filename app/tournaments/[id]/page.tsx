@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { fetcher } from '@/lib/api';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Users, Trophy, Edit } from 'lucide-react';
+import TypstRenderer from '@/app/components/TypstRenderer';
 
 interface Tournament {
   id: string;
@@ -158,15 +159,8 @@ export default function TournamentDetailPage() {
           </h2>
           
           {tournament.statement ? (
-              <div className="prose prose-invert max-w-none">
-                  {/* For now, displaying as pre-formatted text. 
-                      Ideally, this would be a Typst renderer. */}
-                  <pre className="bg-black/30 p-6 rounded-lg overflow-x-auto font-mono text-sm text-gray-300 border border-white/5 whitespace-pre-wrap">
-                      {tournament.statement}
-                  </pre>
-                  <p className="mt-4 text-xs text-gray-600 italic">
-                      * Rendered as raw Typst source (Preview Mode)
-                  </p>
+              <div className="overflow-hidden rounded-xl border border-white/10">
+                  <TypstRenderer code={tournament.statement} />
               </div>
           ) : (
               <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-xl">
