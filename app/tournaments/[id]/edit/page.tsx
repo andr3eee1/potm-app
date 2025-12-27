@@ -19,6 +19,7 @@ export default function EditTournamentPage() {
     endDate: '',
     prizePool: '',
     status: 'UPCOMING',
+    difficulty: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -50,14 +51,11 @@ export default function EditTournamentPage() {
           title: data.title,
           description: data.description,
           statement: data.statement || '',
-          startDate: formatDate(data.startDate), // Note: API returns locale date string, might need parsing. 
-          // Wait, the API returns `toLocaleDateString()`. This is bad for editing. 
-          // I should verify what the API actually returns or fix the API to return ISO string.
-          // Let's assume for now I need to fix the API or parse it. 
-          // The API `getTournamentById` returns `toLocaleDateString()`. I should change that to `toISOString()` in the backend for consistency.
+          startDate: formatDate(data.startDate),
           endDate: formatDate(data.endDate),
           prizePool: data.prizePool || '',
           status: mapStatus(data.status),
+          difficulty: data.difficulty || '',
         });
       } catch (err: any) {
         setError(err.message);
@@ -177,7 +175,7 @@ export default function EditTournamentPage() {
                   </div>
               </div>
 
-               <div className="grid grid-cols-2 gap-6">
+               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                    <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Prize Pool</label>
                       <input
@@ -187,6 +185,21 @@ export default function EditTournamentPage() {
                           onChange={handleChange}
                           className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-colors"
                       />
+                  </div>
+                   <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Difficulty</label>
+                      <select
+                          name="difficulty"
+                          value={formData.difficulty}
+                          onChange={handleChange}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                      >
+                          <option value="" className="bg-black">N/A</option>
+                          <option value="Easy" className="bg-black">Easy</option>
+                          <option value="Medium" className="bg-black">Medium</option>
+                          <option value="Hard" className="bg-black">Hard</option>
+                          <option value="Extreme" className="bg-black">Extreme</option>
+                      </select>
                   </div>
                    <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Initial Status</label>

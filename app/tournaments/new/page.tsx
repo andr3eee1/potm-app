@@ -16,6 +16,7 @@ export default function CreateTournamentPage() {
     prizePool: '',
     status: 'UPCOMING',
     statement: '',
+    difficulty: '',
   });
   const [error, setError] = useState('');
 
@@ -27,6 +28,8 @@ export default function CreateTournamentPage() {
     e.preventDefault();
     setError('');
     try {
+      // Filter out empty strings to allow defaults to kick in if needed, 
+      // but for difficulty empty string is N/A effectively if we handle it
       await fetcher('/tournaments', {
         method: 'POST',
         body: JSON.stringify(formData),
@@ -127,7 +130,7 @@ export default function CreateTournamentPage() {
                   </div>
               </div>
 
-               <div className="grid grid-cols-2 gap-6">
+               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                    <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Prize Pool</label>
                       <input
@@ -138,6 +141,21 @@ export default function CreateTournamentPage() {
                           className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-colors"
                           placeholder="$1000"
                       />
+                  </div>
+                   <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Difficulty</label>
+                      <select
+                          name="difficulty"
+                          value={formData.difficulty}
+                          onChange={handleChange}
+                          className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                      >
+                          <option value="" className="bg-black">N/A</option>
+                          <option value="Easy" className="bg-black">Easy</option>
+                          <option value="Medium" className="bg-black">Medium</option>
+                          <option value="Hard" className="bg-black">Hard</option>
+                          <option value="Extreme" className="bg-black">Extreme</option>
+                      </select>
                   </div>
                    <div>
                       <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Initial Status</label>
