@@ -20,6 +20,13 @@ interface TypstRendererProps {
   code: string;
 }
 
+async function sha256(message: string) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default function TypstRenderer({ code }: TypstRendererProps) {
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -29,7 +36,30 @@ export default function TypstRenderer({ code }: TypstRendererProps) {
 
     const render = async () => {
       try {
+        const hash = await sha256(code);
+        const cacheKey = `typst_cache_${hash}`;
+        
+        try {
+            const cached = sessionStorage.getItem(cacheKey);
+            if (cached) {
+                if (mounted) {
+                    setSvg(cached);
+                    setError('');
+                }
+                return;
+            }
+        } catch (e) {
+            console.warn("Failed to access sessionStorage", e);
+        }
+
         const svgOutput = await $typst.svg({ mainContent: code });
+        
+        try {
+            sessionStorage.setItem(cacheKey, svgOutput);
+        } catch (e) {
+            console.warn("Failed to cache Typst output", e);
+        }
+
         if (mounted) {
           setSvg(svgOutput);
           setError('');
