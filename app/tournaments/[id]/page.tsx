@@ -27,7 +27,6 @@ export default function TournamentDetailPage() {
   const { id } = params;
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
-  const [canEdit, setCanEdit] = useState(false);
   const [error, setError] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
   
@@ -38,13 +37,12 @@ export default function TournamentDetailPage() {
   const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
-    // Check Admin/Editor Role
+    // Check Auth
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             setCurrentUser(payload);
-            if (payload.role === 'ADMIN' || payload.role === 'EDITOR') setCanEdit(true);
         } catch (e) {
             console.error("Invalid token", e);
         }
@@ -110,7 +108,11 @@ export default function TournamentDetailPage() {
       )
   }
 
-  const canViewSubmissions = currentUser && (currentUser.role === 'ADMIN' || (tournament.creatorId && currentUser.userId === tournament.creatorId));
+  const isCreator = currentUser && tournament && currentUser.userId === tournament.creatorId;
+  const isAdmin = currentUser && currentUser.role === 'ADMIN';
+  const canEdit = isAdmin || isCreator;
+  const canSubmit = !!currentUser;
+  const canViewSubmissions = canEdit;
 
   return (
     <div className="max-w-7xl mx-auto pb-20 px-4">
@@ -225,7 +227,7 @@ export default function TournamentDetailPage() {
               </div>
 
               {/* Submit Button */}
-              {tournament.status === 'Active' && (
+              {canSubmit && tournament.status === 'Active' && (
                 <button 
                     onClick={() => setIsSubmitOpen(true)}
                     className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
