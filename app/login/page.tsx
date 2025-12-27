@@ -8,6 +8,7 @@ import { fetcher } from '@/lib/api';
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -17,7 +18,7 @@ export default function LoginPage() {
     try {
       const data = await fetcher('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, rememberMe }),
       });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -81,6 +82,20 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 required
                 />
+            </div>
+
+            <div className="flex items-center">
+                <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 bg-white/5 border-white/10"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
+                    Remember me for 7 days
+                </label>
             </div>
             
             <button
