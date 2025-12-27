@@ -76,14 +76,14 @@ export default function TournamentDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-20">
+    <div className="max-w-7xl mx-auto pb-20 px-4">
       {/* Header */}
       <div className="mb-8">
           <Link href="/tournaments" className="text-gray-500 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors mb-6">
               <ArrowLeft size={16} /> Back to Missions
           </Link>
           
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
               <div>
                   <div className="flex items-center gap-3 mb-2">
                        <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
@@ -97,14 +97,14 @@ export default function TournamentDetailPage() {
                            {tournament.difficulty}
                        </span>
                   </div>
-                  <h1 className="text-4xl font-bold text-white mb-2">{tournament.title}</h1>
-                  <p className="text-xl text-gray-400">{tournament.description}</p>
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">{tournament.title}</h1>
+                  <p className="text-xl text-gray-400 max-w-3xl">{tournament.description}</p>
               </div>
               
               {canEdit && (
                   <Link 
                     href={`/tournaments/${tournament.id}/edit`}
-                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-indigo-500/20"
+                    className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors"
                   >
                       <Edit size={16} /> Edit Protocol
                   </Link>
@@ -112,60 +112,89 @@ export default function TournamentDetailPage() {
           </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="glass p-4 rounded-xl flex items-center gap-4">
-              <div className="p-3 bg-blue-500/10 rounded-lg text-blue-400">
-                  <Calendar size={24} />
-              </div>
-              <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Timeline</div>
-                  <div className="text-white font-mono text-sm">
-                      {new Date(tournament.startDate).toLocaleDateString()} - {new Date(tournament.endDate).toLocaleDateString()}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Main Content - Statement */}
+          <div className="lg:col-span-3 order-2 lg:order-1">
+              <div className="glass rounded-2xl p-1 border-t-4 border-t-indigo-500 min-h-[600px] flex flex-col">
+                  <div className="p-6 md:p-8 border-b border-white/5 bg-white/5 rounded-t-xl">
+                      <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                          <span className="text-indigo-500">#</span> Mission Statement
+                      </h2>
                   </div>
-              </div>
-          </div>
-          
-           <div className="glass p-4 rounded-xl flex items-center gap-4">
-              <div className="p-3 bg-purple-500/10 rounded-lg text-purple-400">
-                  <Trophy size={24} />
-              </div>
-              <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Prize Pool</div>
-                  <div className="text-white font-mono text-sm">
-                      {tournament.prizePool || "Honor & Glory"}
+                  
+                  <div className="p-6 md:p-8 flex-1">
+                      {tournament.statement ? (
+                          <div className="overflow-hidden rounded-xl border border-white/10 bg-white shadow-xl">
+                              <TypstRenderer code={tournament.statement} />
+                          </div>
+                      ) : (
+                          <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-xl h-full flex items-center justify-center flex-col">
+                              <p className="text-gray-500">No mission statement provided for this protocol.</p>
+                          </div>
+                      )}
                   </div>
               </div>
           </div>
 
-           <div className="glass p-4 rounded-xl flex items-center gap-4">
-              <div className="p-3 bg-amber-500/10 rounded-lg text-amber-400">
-                  <Award size={24} />
-              </div>
-              <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Points</div>
-                  <div className="text-white font-mono text-sm">
-                      {tournament.points} PTS
+          {/* Sidebar - Stats & Actions */}
+          <div className="lg:col-span-1 space-y-4 order-1 lg:order-2">
+               {/* Prize Pool Card */}
+               <div className="glass p-6 rounded-xl flex flex-col gap-2 border border-yellow-500/20 bg-gradient-to-br from-yellow-500/5 to-transparent relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2"></div>
+                  <div className="flex items-center gap-3 text-yellow-400 mb-1 relative z-10">
+                      <Trophy size={20} />
+                      <span className="font-bold uppercase tracking-wider text-xs">Prize Pool</span>
+                  </div>
+                  <div className="text-3xl font-bold text-white font-mono relative z-10 tracking-tight">
+                      {tournament.prizePool || "N/A"}
                   </div>
               </div>
-          </div>
-      </div>
 
-      {/* Statement Section */}
-      <div className="glass rounded-2xl p-8 border-t-4 border-t-indigo-500">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-              <span className="text-indigo-500">#</span> Mission Statement
-          </h2>
-          
-          {tournament.statement ? (
-              <div className="overflow-hidden rounded-xl border border-white/10">
-                  <TypstRenderer code={tournament.statement} />
+               {/* Points Card */}
+               <div className="glass p-5 rounded-xl flex items-center justify-between">
+                  <div>
+                      <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Points</div>
+                      <div className="text-white font-mono text-2xl font-bold">
+                          {tournament.points} <span className="text-sm text-gray-500 font-sans">PTS</span>
+                      </div>
+                  </div>
+                  <div className="p-3 bg-amber-500/10 rounded-lg text-amber-400">
+                      <Award size={24} />
+                  </div>
               </div>
-          ) : (
-              <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-xl">
-                  <p className="text-gray-500">No mission statement provided for this protocol.</p>
+
+              {/* Timeline Card */}
+              <div className="glass p-5 rounded-xl">
+                  <div className="flex items-center gap-2 text-gray-400 mb-4 text-xs font-bold uppercase tracking-wider">
+                      <Calendar size={14} /> Mission Timeline
+                  </div>
+                  <div className="space-y-4 relative">
+                      {/* Connector Line */}
+                      <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-white/10 rounded-full"></div>
+
+                      <div className="relative pl-6">
+                          <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-indigo-500 border-2 border-[#050505]"></div>
+                          <p className="text-xs text-indigo-400 font-bold uppercase mb-0.5">Start</p>
+                          <p className="text-white font-mono text-sm">{new Date(tournament.startDate).toLocaleDateString()}</p>
+                          <p className="text-[10px] text-gray-500">{new Date(tournament.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                      </div>
+                      <div className="relative pl-6">
+                           <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-gray-700 border-2 border-[#050505]"></div>
+                          <p className="text-xs text-gray-500 font-bold uppercase mb-0.5">Deadline</p>
+                          <p className="text-white font-mono text-sm">{new Date(tournament.endDate).toLocaleDateString()}</p>
+                          <p className="text-[10px] text-gray-500">{new Date(tournament.endDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                      </div>
+                  </div>
               </div>
-          )}
+
+              {/* Submit Button */}
+              {tournament.status === 'Active' && (
+                <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group">
+                    <span className="uppercase tracking-wider">Submit Solution</span>
+                    <ArrowLeft size={16} className="rotate-180 group-hover:translate-x-1 transition-transform" />
+                </button>
+              )}
+          </div>
       </div>
     </div>
   );
